@@ -1,0 +1,114 @@
+{
+  "issue": {
+    "masthead": "MONOPEOPLE",
+    "subtitle": "Що відбувається поза роботою?",
+    "number": "Випуск 1",
+    "period": "Серпень 2026",
+    "tagline": "The Monobank — про життя всередині",
+    "price": ""
+  },
+  "pages": [
+    {
+      "kind": "image",
+      "imageUrl": "images/monopeople/page-01.jpg",
+      "alt": "Сторінка 1",
+      "hard": true
+    },
+    {
+      "kind": "image",
+      "imageUrl": "images/monopeople/page-02.jpg",
+      "alt": "Сторінка 2"
+    },
+    {
+      "kind": "image",
+      "imageUrl": "images/monopeople/page-03.jpg",
+      "alt": "Сторінка 3"
+    },
+    {
+      "kind": "image",
+      "imageUrl": "images/monopeople/page-04.jpg",
+      "alt": "Сторінка 4"
+    },
+    {
+      "kind": "image",
+      "imageUrl": "images/monopeople/page-05.jpg",
+      "alt": "Сторінка 5"
+    },
+    {
+      "kind": "image",
+      "imageUrl": "images/monopeople/page-06.jpg",
+      "alt": "Сторінка 6"
+    },
+    {
+      "kind": "image",
+      "imageUrl": "images/monopeople/page-07.jpg",
+      "alt": "Сторінка 7"
+    },
+    {
+      "kind": "image",
+      "imageUrl": "images/monopeople/page-08.jpg",
+      "alt": "Сторінка 8"
+    },
+    {
+      "kind": "image",
+      "imageUrl": "images/monopeople/page-09.jpg",
+      "alt": "Сторінка 9"
+    },
+    {
+      "kind": "image",
+      "imageUrl": "images/monopeople/page-10.jpg",
+      "alt": "Сторінка 10"
+    },
+    {
+      "kind": "image",
+      "imageUrl": "images/monopeople/page-11.jpg",
+      "alt": "Сторінка 11"
+    },
+    {
+      "kind": "image",
+      "imageUrl": "images/monopeople/page-12.jpg",
+      "alt": "Сторінка 12"
+    },
+    {
+      "kind": "image",
+      "imageUrl": "images/monopeople/page-13.jpg",
+      "alt": "Сторінка 13"
+    },
+    {
+      "kind": "image",
+      "imageUrl": "images/monopeople/page-14.jpg",
+      "alt": "Сторінка 14"
+    },
+    {
+      "kind": "image",
+      "imageUrl": "images/monopeople/page-15.jpg",
+      "alt": "Сторінка 15"
+    },
+    {
+      "kind": "image",
+      "imageUrl": "images/monopeople/page-16.jpg",
+      "alt": "Сторінка 16"
+    },
+    {
+      "kind": "image",
+      "imageUrl": "images/monopeople/page-17.jpg",
+      "alt": "Сторінка 17"
+    },
+    {
+      "kind": "image",
+      "imageUrl": "images/monopeople/page-18.jpg",
+      "alt": "Сторінка 18"
+    },
+    {
+      "kind": "image",
+      "imageUrl": "images/monopeople/page-19.jpg",
+      "alt": "Сторінка 19"
+    },
+    {
+      "kind": "image",
+      "imageUrl": "images/monopeople/page-20.jpg",
+      "alt": "Сторінка 20",
+      "hard": true
+    }
+  ]
+}

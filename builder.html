@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Конструктор — Вісник</title>
+<link rel="stylesheet" href="css/builder.css">
+</head>
+<body>
+
+  <header class="bheader">
+    <div class="bheader__title">⚙ Конструктор випуску «Вісник»</div>
+    <div class="bheader__actions">
+      <button id="loadTemplateBtn" class="bbtn">Завантажити поточний випуск</button>
+      <button id="clearBtn" class="bbtn bbtn--danger">Очистити все</button>
+      <a href="index.html" class="bbtn">Газета →</a>
+    </div>
+  </header>
+
+  <p class="bhint">
+    Заповнюй поля нижче — газета будується автоматично з цих даних. Фото завантажуються з твого комп'ютера
+    (стискаються в браузері й вбудовуються прямо в дані, окремо копіювати файли не потрібно).
+    Чернетка автоматично зберігається в цьому браузері.
+  </p>
+
+  <main id="builderRoot" class="broot"></main>
+
+  <footer class="bfooter">
+    <button id="saveViewBtn" class="bbtn bbtn--primary">Зберегти й переглянути газету</button>
+    <button id="downloadBtn" class="bbtn">Завантажити data.json</button>
+    <span class="bfooter__note">«Завантажити data.json» — щоб зберегти випуск назавжди, поклади файл у <code>data/data.json</code>.</span>
+  </footer>
+
+  <script src="js/builder.js"></script>
+</body>
+</html>

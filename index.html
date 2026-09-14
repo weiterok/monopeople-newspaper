@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Вісник — корпоративний дайджест</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="toolbar">
+    <div class="toolbar__title">Вісник — перегляд випуску</div>
+    <div class="toolbar__actions">
+      <button id="prevBtn" class="toolbar__btn" title="Попередня сторінка">‹</button>
+      <span id="pageIndicator" class="toolbar__indicator">— / —</span>
+      <button id="nextBtn" class="toolbar__btn" title="Наступна сторінка">›</button>
+      <span class="toolbar__sep"></span>
+      <button id="fitBtn" class="toolbar__btn toolbar__btn--wide" title="Перейти на обкладинку"><span class="btn-icon">⇤</span><span class="btn-label"> На обкладинку</span></button>
+      <button id="soundBtn" class="toolbar__btn" title="Звук перегортання">🔊</button>
+      <span class="toolbar__sep"></span>
+      <a href="builder.html" class="toolbar__btn toolbar__btn--wide" title="Відкрити конструктор"><span class="btn-icon">⚙</span><span class="btn-label"> Конструктор</span></a>
+    </div>
+  </header>
+
+  <div id="draftBanner" class="draft-banner" hidden>
+    Показано чернетку з конструктора (не збережена у файл).
+    <button id="resetDraftBtn" class="draft-banner__btn">Показати збережений випуск</button>
+  </div>
+
+  <main id="stage" class="stage">
+    <div id="book" class="book"></div>
+  </main>
+
+  <p class="hint">Клікай по краю сторінки або тягни її, щоб перегорнути. Дані випуску — у <code>data/data.json</code> або з конструктора.</p>
+
+  <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
