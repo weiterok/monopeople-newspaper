@@ -262,21 +262,82 @@
       .map((p, i) => buildPage(p, issue, i + 1, total))
       .join('');
 
-    const pageFlip = new St.PageFlip(bookEl, {
-      width: 560,
-      height: 791,
-      size: 'stretch',
-      minWidth: 300,
-      maxWidth: 700,
-      minHeight: 424,
-      maxHeight: 990,
-      showCover: true,
-      maxShadowOpacity: 0.5,
-      mobileScrollSupport: true,
-      usePortrait: true
-    });
+    const PAGE_ASPECT = 560 / 791; // width / height, matches the A4-ish page shape
 
-    pageFlip.loadFromHTML(document.querySelectorAll('#book .page'));
+    // "stretch" mode only clamps to a static min/max box chosen once at
+    // construction time — it has no idea how tall the actual viewport is.
+    // On a wide-but-short window that made it grow to a fixed max height
+    // that simply didn't fit, forcing a vertical scrollbar. We compute the
+    // box ourselves from the real available space (both width AND height)
+    // every time, and feed that in as a tight min==max bound instead.
+    function computeBookSize() {
+      // Measured from siblings, not from #stage itself: #stage's own
+      // height depends on #book's content (the raw .page divs, ~791px
+      // each, stacked before PageFlip takes over and positions them
+      // absolutely) — measuring #stage directly is circular and always
+      // reports a wildly inflated height on first load.
+      const stage = document.getElementById('stage');
+      const cs = getComputedStyle(stage);
+      const toolbar = document.querySelector('.toolbar');
+      const banner = document.getElementById('draftBanner');
+      const hint = document.querySelector('.hint');
+
+      const chromeH = toolbar.offsetHeight
+        + (banner && !banner.hidden ? banner.offsetHeight : 0)
+        + (hint ? hint.offsetHeight : 0)
+        + parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+
+      const availW = window.innerWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      const availH = window.innerHeight - chromeH;
+
+      const isSpread = availW >= 560; // roughly matches PageFlip's own portrait threshold
+      const widthByW = isSpread ? availW / 2 : availW;
+      const widthByH = availH * PAGE_ASPECT;
+
+      let pageW = Math.max(220, Math.min(700, widthByW, widthByH));
+      let pageH = pageW / PAGE_ASPECT;
+      return { width: Math.round(pageW), height: Math.round(pageH) };
+    }
+
+    let pageFlip = null;
+    let soundPlayedForThisFlip = false;
+
+    function attachHandlers() {
+      pageFlip.on('flip', () => {
+        updateIndicator();
+        if (!soundPlayedForThisFlip) playFlipSound();
+        soundPlayedForThisFlip = false;
+      });
+      pageFlip.on('changeState', (e) => {
+        if (e.data === 'flipping') {
+          soundPlayedForThisFlip = true;
+          playFlipSound();
+        } else if (e.data === 'read') {
+          soundPlayedForThisFlip = false;
+        }
+      });
+    }
+
+    function createPageFlip(startIndex) {
+      const size = computeBookSize();
+      pageFlip = new St.PageFlip(bookEl, {
+        width: size.width,
+        height: size.height,
+        size: 'stretch',
+        minWidth: size.width,
+        maxWidth: size.width,
+        minHeight: size.height,
+        maxHeight: size.height,
+        showCover: true,
+        maxShadowOpacity: 0.5,
+        mobileScrollSupport: true,
+        usePortrait: true
+      });
+      pageFlip.loadFromHTML(document.querySelectorAll('#book .page'));
+      attachHandlers();
+      if (startIndex) pageFlip.turnToPage(startIndex);
+      updateIndicator();
+    }
 
     const indicator = document.getElementById('pageIndicator');
     const prevBtn = document.getElementById('prevBtn');
@@ -287,27 +348,18 @@
     function updateIndicator() {
       indicator.textContent = `${pageFlip.getCurrentPageIndex() + 1} / ${pageFlip.getPageCount()}`;
     }
-    updateIndicator();
 
-    // Button/programmatic flips pass through a "flipping" state we can hook
-    // for an instant sound cue. Manual drag-to-flip never emits "flipping"
-    // (it goes user_fold -> read directly), so "flip" is the only reliable
-    // signal there — but it also fires after "flipping" on the button path,
-    // so a flag prevents double-playing the same flip.
-    let soundPlayedForThisFlip = false;
+    createPageFlip();
 
-    pageFlip.on('flip', () => {
-      updateIndicator();
-      if (!soundPlayedForThisFlip) playFlipSound();
-      soundPlayedForThisFlip = false;
-    });
-    pageFlip.on('changeState', (e) => {
-      if (e.data === 'flipping') {
-        soundPlayedForThisFlip = true;
-        playFlipSound();
-      } else if (e.data === 'read') {
-        soundPlayedForThisFlip = false;
-      }
+    let resizeTimer = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        const keepIndex = pageFlip.getCurrentPageIndex();
+        pageFlip.destroy();
+        bookEl.innerHTML = pages.map((p, i) => buildPage(p, issue, i + 1, total)).join('');
+        createPageFlip(keepIndex);
+      }, 250);
     });
 
     document.addEventListener('pointerdown', unlockAudio, { once: true });
