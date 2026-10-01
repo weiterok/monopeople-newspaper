@@ -34,6 +34,43 @@
       </div>`;
   }
 
+  const RUBRIC_HAND_SVG = `
+    <svg class="rubric__hand" viewBox="0 0 140 70" aria-hidden="true">
+      <path d="M6 58 C 26 64, 52 46, 70 24 C 76 16, 90 6, 102 10 C 114 14, 112 28, 102 34 L 58 56 C 42 65, 20 66, 6 58 Z"
+        fill="#ffffff" stroke="#141b3d" stroke-width="1.5"/>
+    </svg>`;
+
+  // Deterministic pseudo-barcode derived from the issue number/period, so a
+  // given issue always renders the same bars/digits instead of jittering on
+  // every re-render (resize re-builds the whole #book innerHTML).
+  function seededDigits(seed, len) {
+    let h = 0;
+    for (const ch of String(seed)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    let out = '';
+    for (let i = 0; i < len; i++) {
+      h = (h * 1103515245 + 12345) >>> 0;
+      out += h % 10;
+    }
+    return out;
+  }
+
+  function barcodeBlock(issue) {
+    const seed = `${issue.masthead}${issue.number}${issue.period}`;
+    const digits = seededDigits(seed, 12);
+    let h = 0;
+    const bars = Array.from({ length: 34 }, (_, i) => {
+      h = (h * 1103515245 + 12345 + i) >>> 0;
+      const w = 1 + (h % 3);
+      const gap = h % 5 === 0;
+      return `<span style="width:${w}px;${gap ? 'background:transparent;' : ''}"></span>`;
+    }).join('');
+    return `
+      <div class="barcode">
+        ${bars}
+        <span class="barcode__digits">${esc(digits)}</span>
+      </div>`;
+  }
+
   // ---------- page builders ----------
 
   function buildCover(page, issue) {
@@ -48,7 +85,6 @@
         <div class="masthead">
           <div class="masthead__rule">
             <span>${esc(issue.number)}</span>
-            <span>${esc(issue.period)}</span>
             <span>${esc(issue.price)}</span>
           </div>
           <div class="masthead__title">${esc(issue.masthead)}</div>
@@ -60,6 +96,10 @@
           <div class="dek">${esc(page.dek)}</div>
         </div>
         <div class="teasers">${teasers}</div>
+        <div class="cover-footer-row">
+          <span class="issue-date">${esc(issue.period)}</span>
+          ${barcodeBlock(issue)}
+        </div>
       </div>`;
   }
 
@@ -95,7 +135,7 @@
 
     const quote = page.quote ? `
       <div class="pullquote">
-        “${esc(page.quote.text)}”
+        ${esc(page.quote.text)}
         <span class="pullquote__author">${esc(page.quote.author)}</span>
       </div>` : '';
 
@@ -144,8 +184,11 @@
     return `
       <div class="page page--content">
         <div class="rubric">
-          <div class="rubric__title">${esc(page.rubric)}</div>
-          <div class="rubric__meta">${esc(issue.number)}</div>
+          <div class="rubric__pill-wrap">
+            <div class="rubric__pill">${esc(page.rubric)}</div>
+            ${RUBRIC_HAND_SVG}
+          </div>
+          <div class="rubric__rules"></div>
         </div>
         ${builder(page)}
         ${footer(issue, pageNum, totalPages)}
@@ -153,20 +196,44 @@
   }
 
   function buildBack(page, issue) {
+    const ctaLabel = page.ctaLabel || 'Поділись з нами';
+    const ctaUrl = page.ctaUrl || '#';
     return `
       <div class="page page--back" data-density="hard">
         <div class="back-box">
           <div class="box-title">${esc(page.contactTitle)}</div>
           <p>${esc(page.contactText)}</p>
+          <a class="cta-pill" href="${esc(ctaUrl)}" target="_blank" rel="noopener">
+            <span>${esc(ctaLabel)}</span>
+            <span class="cta-pill__arrow">›</span>
+          </a>
         </div>
         <div class="back-footer">${esc(page.footerNote)}</div>
       </div>`;
   }
 
+  function overlayLinkBlock(link) {
+    if (!link || !link.url) return '';
+    const top = link.top ?? 0;
+    const left = link.left ?? 0;
+    const width = link.width ?? 20;
+    const height = link.height ?? 10;
+    return `
+      <a class="image-overlay-link" href="${esc(link.url)}" target="_blank" rel="noopener"
+        aria-label="${esc(link.label || 'Поділитись з нами')}"
+        style="top:${top}%; left:${left}%; width:${width}%; height:${height}%;"></a>`;
+  }
+
+  // Scanned/pre-rendered issue pages are flat raster images, so any button
+  // drawn into the artwork (e.g. the "Поділись з нами" CTA on the back
+  // page) is just pixels, not a real link. overlayLink places an invisible,
+  // click-through anchor over the artwork's own button coordinates so the
+  // printed design stays pixel-perfect while the arrow stays clickable.
   function buildImage(page) {
     return `
       <div class="page page--image"${page.hard ? ' data-density="hard"' : ''}>
         <img src="${esc(page.imageUrl)}" alt="${esc(page.alt || '')}">
+        ${overlayLinkBlock(page.overlayLink)}
       </div>`;
   }
 

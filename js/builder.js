@@ -48,7 +48,7 @@
       pages: [
         { kind: 'cover', headline: '', dek: '', photoLabel: '', photoTone: 'amber', photoUrl: '', teasers: [] },
         TEMPLATES.page(),
-        { kind: 'back', contactTitle: 'Зворотний зв’язок', contactText: '', footerNote: '' }
+        { kind: 'back', contactTitle: 'Зворотний зв’язок', contactText: '', footerNote: '', ctaLabel: 'Поділись з нами', ctaUrl: '' }
       ]
     };
   }
@@ -59,6 +59,9 @@
     } else if (page.kind === 'image') {
       page.imageUrl = page.imageUrl || '';
       page.alt = page.alt || '';
+    } else if (page.kind === 'back') {
+      page.ctaLabel = page.ctaLabel || 'Поділись з нами';
+      page.ctaUrl = page.ctaUrl || '';
     } else if (page.kind === 'content') {
       page.layout = page.layout || 'columns';
       if (page.layout === 'featured' || page.layout === 'columns') {
@@ -281,7 +284,15 @@
         </label></div>
         <div class="field-row"><label>Підпис унизу сторінки
           <input type="text" data-path="${path}.footerNote" value="${esc(page.footerNote)}">
-        </label></div>`;
+        </label></div>
+        <div class="field-grid field-row">
+          <label>Текст кнопки-посилання
+            <input type="text" data-path="${path}.ctaLabel" value="${esc(page.ctaLabel || 'Поділись з нами')}">
+          </label>
+          <label>Куди веде кнопка (URL)
+            <input type="text" data-path="${path}.ctaUrl" value="${esc(page.ctaUrl || '')}">
+          </label>
+        </div>`;
     } else {
       const layout = page.layout || 'columns';
       body = `
