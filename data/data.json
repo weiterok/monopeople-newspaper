@@ -108,7 +108,15 @@
       "kind": "image",
       "imageUrl": "images/monopeople/page-20.jpg",
       "alt": "Сторінка 20",
-      "hard": true
+      "hard": true,
+      "overlayLink": {
+        "url": "https://docs.google.com/forms/d/e/1FAIpQLScdEBpEqEoKkfOQ_gpGlG8gxgev0l5DRsPiEKZqc10HvY9GFQ/viewform?pli=1&pli=1",
+        "label": "Поділись з нами",
+        "top": 81.1,
+        "left": 2.4,
+        "width": 94.1,
+        "height": 8.1
+      }
     }
   ]
 }
